@@ -1,0 +1,19 @@
+phonenumbers>=8.13.0
+
+requests>=2.31.0
+pandas>=2.0.0
+
+# 避免 macOS 上 Python/LibreSSL 环境触发 urllib3 v2 的兼容性警告/潜在问题
+urllib3<2
+
+# 供 pandas.read_html 解析 SDW 返回页面表格
+lxml>=4.9.0
+
+# 作为 lxml 的纯 Python 兜底解析器（避免某些环境安装 lxml 失败）
+beautifulsoup4>=4.12.0
+html5lib>=1.1
+
+# 股票数据获取（港股、A股等）
+akshare>=1.12.0
+
+
