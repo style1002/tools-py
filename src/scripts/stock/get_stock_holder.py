@@ -18,13 +18,33 @@ import pandas as pd  # pyright: ignore[reportMissingImports]
 
 # 描述：抓取披露易 https://www3.hkexnews.hk/sdw/search/searchsdw_c.aspx
 
-STOCK_CODE = "01341"
+
+
+# 銅師傅
+# STOCK_CODE = "00664"
+
+# 諾比侃
+# STOCK_CODE = "02635"
+
+# 輕鬆健康
+# STOCK_CODE = "02661"
+
+# 希迪智駕
+# STOCK_CODE = "03881"
+
+# 五一视界
+# STOCK_CODE = "06651"
+
+# 卓越睿新
+# STOCK_CODE = "02687"
+
 
 # 手动指定要处理的日期数组（格式：YYYY-MM-DD）
 # 单日：QUERY_DATES = ["2025-07-15"]
 # 多日：QUERY_DATES = ["2025-07-01", "2025-07-02", "2025-07-03", ...]
+
 QUERY_DATES = [
-"2025-12-19"
+    '2026-04-21'
 ]
 
 OUTPUT_DIR = Path(f"out/scripts/stock/{STOCK_CODE}") # 输出目录

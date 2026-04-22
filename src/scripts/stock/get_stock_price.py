@@ -3,13 +3,29 @@ import pandas as pd
 from datetime import datetime, timedelta
 from pathlib import Path
 
-# 港股代码：01341（昊天国际建投）
-symbol = "01341"
-stock_name = "昊天國際建投"  # 股票名称，如果为空则尝试从接口获取
-#issued_shares = 11095376835  # 已发行股数，如果为 None 则尝试从接口获取
-issued_shares = 7621152835  # 已发行股数，如果为 None 则尝试从接口获取
-start_date = "20241201"  # 开始日期
-end_date = "20250131"    # 结束日期
+# 铜师傅
+# symbol = "00664"
+# stock_name = "銅師傅"
+# issued_shares = 51917127 # 如果为 None 则尝试从接口获取
+
+# # 诺比侃
+# symbol = "02635"
+# stock_name = "諾比侃"
+# issued_shares = 30434578 # 如果为 None 则尝试从接口获取
+
+# 轻松健康
+# symbol = "02661"
+# stock_name = "輕鬆健康"
+# issued_shares = 206374209 # 如果为 None 则尝试从接口获取
+
+# 希迪智駕
+# symbol = "03881"
+# stock_name = "希迪智駕"
+# issued_shares = 424438920 # 如果为 None 则尝试从接口获取
+
+
+start_date = "20260410"  # 开始日期 79
+end_date = "20260417"    # 结束日期 68
 
 print(f"正在获取港股 {symbol} 的历史数据...")
 print(f"日期范围: {start_date} 至 {end_date}")
@@ -53,6 +69,13 @@ try:
         try:
             if hasattr(ak, 'stock_hk_daily'):
                 df = ak.stock_hk_daily(symbol=symbol, adjust="qfq")
+                print(f"symbol: {symbol}")
+                print(f"stock_name: {stock_name}")
+                print(f"issued_shares: {issued_shares}")
+                print(f"start_date: {start_date}")
+                print(f"end_date: {end_date}")
+                print(f"列名: {df.columns.tolist()}")
+                print(f"前几行数据:\n{df.head()}")
                 # 过滤日期范围
                 if not df.empty:
                     date_col = [c for c in df.columns if '日期' in str(c) or 'date' in str(c).lower()][0]
