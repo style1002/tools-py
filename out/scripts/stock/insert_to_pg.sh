@@ -5,12 +5,11 @@ set -euo pipefail
 #CODE="${1:-00664}"
 #CODE="${1:-02635}"
 #CODE="${1:-02661}"
-#CODE="${1:-02687}"
 #CODE="${1:-03881}"
-CODE="${1:-06651}"
+#CODE="${1:-06651}"
 
 YM="${2:-2026-04}"
-D="${3:-20260421}"
+D="${3:-20260424}"
 
 PRICE_SQL="/tmp/scripts/stock/${CODE}/stock_${CODE}_price_${D}_${D}.sql"
 BROKERS_SQL="/tmp/scripts/stock/${CODE}/${YM}/stock_${CODE}_brokers_${D}.sql"

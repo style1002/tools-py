@@ -35,16 +35,17 @@ import pandas as pd  # pyright: ignore[reportMissingImports]
 # 五一视界
 # STOCK_CODE = "06651"
 
-# 卓越睿新
-# STOCK_CODE = "02687"
-
 
 # 手动指定要处理的日期数组（格式：YYYY-MM-DD）
 # 单日：QUERY_DATES = ["2025-07-15"]
 # 多日：QUERY_DATES = ["2025-07-01", "2025-07-02", "2025-07-03", ...]
 
 QUERY_DATES = [
-    '2026-04-21'
+    '2026-04-24'
+]
+
+HOLDING_DATE_REAL = [
+    '2026-04-22'
 ]
 
 OUTPUT_DIR = Path(f"out/scripts/stock/{STOCK_CODE}") # 输出目录
@@ -237,6 +238,7 @@ def df_to_postgres_inserts(
     stock_code: str,
     stock_name: str,
     holding_date: str,
+    holding_date_real: str,
     ccass_shareholding: Optional[int],
     issued_shares: Optional[int],
     non_disclosed_shareholding: Optional[int] = None,
@@ -252,7 +254,8 @@ def df_to_postgres_inserts(
 
     cols = (
         '"stock_code", "stock_name", "broker_id", "broker_name", "holding_date", "share_quantity", '
-        '"is_disclosure", "created_at", "updated_at", "ccass_shareholding", "issued_shares", "equity_percentage"'
+        '"is_disclosure", "created_at", "updated_at", "ccass_shareholding", "issued_shares", "equity_percentage", '
+        '"holding_date_real"'
     )
     value_rows: list[str] = []
 
@@ -288,7 +291,8 @@ def df_to_postgres_inserts(
             f"{_sql_quote(updated_at)}, "
             f"{ccass_shareholding if ccass_shareholding is not None else 'NULL'}, "
             f"{issued_shares if issued_shares is not None else 'NULL'}, "
-            f"{equity_percentage}"
+            f"{equity_percentage}, "
+            f"{_sql_quote(holding_date_real)}"
         )
         return f"({values})"
 
@@ -603,7 +607,12 @@ def parse_broker_html(html: Optional[str], query_date: Optional[str] = None) -> 
     return df
 
 
-def process_single_date(stock_code: str, date_str: str, output_base_dir: str = OUTPUT_DIR) -> Optional[pd.DataFrame]:
+def process_single_date(
+    stock_code: str,
+    date_str: str,
+    holding_date_real: str,
+    output_base_dir: str = OUTPUT_DIR,
+) -> Optional[pd.DataFrame]:
     """
     处理单个日期的数据（原有逻辑，只是把文件保存到 out/ 目录）
     """
@@ -642,6 +651,7 @@ def process_single_date(stock_code: str, date_str: str, output_base_dir: str = O
                 stock_code=meta["stock_code"],
                 stock_name=meta["stock_name"],
                 holding_date=meta["holding_date"],
+                holding_date_real=holding_date_real,
                 ccass_shareholding=meta["ccass_shareholding"],
                 issued_shares=meta["issued_shares"],
                 non_disclosed_shareholding=meta.get("non_disclosed_shareholding"),
@@ -663,18 +673,28 @@ def main():
     主函数：处理 QUERY_DATES 数组中的所有日期
     """
     query_dates = globals().get("QUERY_DATES", [])
+    holding_dates_real = globals().get("HOLDING_DATE_REAL", [])
     
     if not query_dates or not isinstance(query_dates, list) or len(query_dates) == 0:
         print("❌ 请设置 QUERY_DATES 数组，例如：QUERY_DATES = ['2025-07-15']")
+        return
+    if not isinstance(holding_dates_real, list):
+        print("❌ HOLDING_DATE_REAL 必须是数组，例如：HOLDING_DATE_REAL = ['2025-07-14']")
+        return
+    if len(query_dates) != len(holding_dates_real):
+        print(
+            f"❌ QUERY_DATES 与 HOLDING_DATE_REAL 元素个数不一致："
+            f"{len(query_dates)} != {len(holding_dates_real)}"
+        )
         return
     
     print(f"📅 处理 {len(query_dates)} 个日期")
     success_count = 0
     failed_dates = []
     
-    for date_str in query_dates:
+    for idx, date_str in enumerate(query_dates):
         try:
-            df = process_single_date(STOCK_CODE, date_str, OUTPUT_DIR)
+            df = process_single_date(STOCK_CODE, date_str, holding_dates_real[idx], OUTPUT_DIR)
             if df is not None:
                 success_count += 1
             else:
