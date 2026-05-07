@@ -15,9 +15,12 @@ warnings.filterwarnings("ignore", message=r"urllib3 v2 only supports OpenSSL.*")
 
 import requests  # pyright: ignore[reportMissingModuleSource]
 import pandas as pd  # pyright: ignore[reportMissingImports]
+import os
 
 # 描述：抓取披露易 https://www3.hkexnews.hk/sdw/search/searchsdw_c.aspx
 
+STOCK_CODE = os.getenv('STOCK_CODE', '00000')  # 默認值為 00000
+print(f"Processing {STOCK_CODE}")
 
 
 # 銅師傅
@@ -35,17 +38,19 @@ import pandas as pd  # pyright: ignore[reportMissingImports]
 # 五一视界
 # STOCK_CODE = "06651"
 
+# 广合科技
+# STOCK_CODE = "01989"
 
 # 手动指定要处理的日期数组（格式：YYYY-MM-DD）
 # 单日：QUERY_DATES = ["2025-07-15"]
 # 多日：QUERY_DATES = ["2025-07-01", "2025-07-02", "2025-07-03", ...]
 
 QUERY_DATES = [
-    '2026-04-24'
+    '2026-05-08'
 ]
 
 HOLDING_DATE_REAL = [
-    '2026-04-22'
+    '2026-05-06'
 ]
 
 OUTPUT_DIR = Path(f"out/scripts/stock/{STOCK_CODE}") # 输出目录
