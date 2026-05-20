@@ -24,8 +24,12 @@ from pathlib import Path
 # issued_shares = 424438920 # 如果为 None 则尝试从接口获取
 
 
-start_date = "20260410"  # 开始日期 79
-end_date = "20260417"    # 结束日期 68
+symbol = "09993"
+stock_name = "金辉控股"
+issued_shares = 4045227000 # 如果为 None 则尝试从接口获取
+
+start_date = "20260101"  # 开始日期 79
+end_date = "20260515"    # 结束日期 68
 
 print(f"正在获取港股 {symbol} 的历史数据...")
 print(f"日期范围: {start_date} 至 {end_date}")
