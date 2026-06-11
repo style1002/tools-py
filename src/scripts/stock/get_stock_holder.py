@@ -44,17 +44,22 @@ print(f"Processing {STOCK_CODE}")
 # 手动指定要处理的日期数组（格式：YYYY-MM-DD）
 # 单日：QUERY_DATES = ["2025-07-15"]
 # 多日：QUERY_DATES = ["2025-07-01", "2025-07-02", "2025-07-03", ...]
-# 亦可通过环境变量覆盖（单日）：QUERY_DATE、HOLDING_DATE_REAL
+# 亦可通过环境变量覆盖（逗号分隔）：QUERY_DATES、HOLDING_DATE_REAL
+
+DEFAULT_QUERY_DATES = ["2026-05-20"]
+DEFAULT_HOLDING_DATE_REAL = ["2026-05-18"]
 
 
-def _env_single_date_list(env_key: str, default: list[str]) -> list[str]:
+def _env_date_list(env_key: str, default: list[str]) -> list[str]:
     v = os.getenv(env_key)
-    return [v] if v else default
+    if not v:
+        return default
+    return [s.strip() for s in v.split(",") if s.strip()]
 
 
-QUERY_DATES = _env_single_date_list("QUERY_DATE", ["2026-05-19"])
+QUERY_DATES = _env_date_list("QUERY_DATES", DEFAULT_QUERY_DATES)
 
-HOLDING_DATE_REAL = _env_single_date_list("HOLDING_DATE_REAL", ["2026-05-15"])
+HOLDING_DATE_REAL = _env_date_list("HOLDING_DATE_REAL", DEFAULT_HOLDING_DATE_REAL)
 
 OUTPUT_DIR = Path(f"out/scripts/stock/{STOCK_CODE}") # 输出目录
 
