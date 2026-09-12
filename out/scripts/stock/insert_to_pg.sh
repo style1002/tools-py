@@ -3,23 +3,27 @@
 set -euo pipefail
 
 CODE="${1:0}"
-# CODE="${1:-00664}"
-# CODE="${1:-01989}"
-# CODE="${1:-02635}"
-# CODE="${1:-02661}"
-# CODE="${1:-03881}"
-# CODE="${1:-06651}"
-
 YM="${2:-2026-05}"
 D="${3:-20260519}"
 
 PRICE_SQL="/tmp/scripts/stock/${CODE}/stock_${CODE}_price_${D}_${D}.sql"
 BROKERS_SQL="/tmp/scripts/stock/${CODE}/${YM}/stock_${CODE}_brokers_${D}.sql"
 
-echo "price:   ${PRICE_SQL}"
 echo "brokers: ${BROKERS_SQL}"
 
+DOCKER_ARGS=()
+if docker exec postgres test -f "${PRICE_SQL}"; then
+  DOCKER_ARGS+=(-f "${PRICE_SQL}")
+  echo "price:   ${PRICE_SQL}"
+fi
+
+if ! docker exec postgres test -f "${BROKERS_SQL}"; then
+  echo "❌ 文件不存在: ${BROKERS_SQL}" >&2
+  exit 1
+fi
+
+DOCKER_ARGS+=(-f "${BROKERS_SQL}")
+
 docker exec postgres psql -U postgres -d stock \
-  -f "${PRICE_SQL}" \
-  -f "${BROKERS_SQL}" \
+  "${DOCKER_ARGS[@]}" \
   -c "UPDATE stock_broker_holdings SET stock_name = '諾比侃' WHERE stock_name = '諾比侃(新)';"
