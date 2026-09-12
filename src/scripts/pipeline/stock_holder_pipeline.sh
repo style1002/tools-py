@@ -7,8 +7,10 @@ set -euo pipefail
 # 示例（多日）: stock_holder_pipeline.sh 2026-05-19,2026-05-20 2026-05-18,2026-05-19
 # 不传参则使用下方默认数组；每个 QUERY_DATE 与入库 D 为同一天（YYYY-MM-DD -> YYYYMMDD）
 
-DEFAULT_QUERY_DATES=("2026-06-11")
-DEFAULT_HOLDING_DATE_REAL=("2026-06-09")
+DEFAULT_QUERY_DATES=("2026-09-11")
+DEFAULT_HOLDING_DATE_REAL=("2026-09-09")
+# 上述日期未执行
+# 2026-09-10,2026-09-11,2026-09-14,2026-09-15,2026-09-16,2026-09-17,2026-09-18,2026-09-21,2026-09-22,2026-09-23,2026-09-24,2026-09-28,2026-09-29,2026-09-30
 
 join_csv() {
   local IFS=,
@@ -64,7 +66,7 @@ fi
 export QUERY_DATES="$(join_csv "${QUERY_DATES_ARR[@]}")"
 export HOLDING_DATE_REAL="$(join_csv "${HOLDING_DATE_REAL_ARR[@]}")"
 
-STOCK_CODES="00664 01989 02635 02661 03881 06651"
+STOCK_CODES="00664 01989 02635 02661 03881 06651 01191"
 QUERY_SCRIPT="/Users/wangwei/PythonProject/tools-py/src/scripts/stock/get_stock_holder.py"
 INSERT_SCRIPT="/Users/wangwei/PythonProject/tools-py/out/scripts/stock/insert_to_pg.sh"
 PYTHON_VENV="/Users/wangwei/PythonProject/tools-py/.venv/bin/python"
